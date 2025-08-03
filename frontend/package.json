@@ -21,10 +21,15 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build && npm run build:sitemap",
+    "build:sitemap": "echo 'Sitemap generation placeholder'",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "build:analyze": "npm run build && npx serve -s build"
+    "analyze": "npm run build && npx serve -s build"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
   },
   "eslintConfig": {
     "extends": [
