@@ -41,23 +41,7 @@ app.use('/api', limiter);
 
 // CORS configuration for production
 const corsOptions = {
-  origin: function (origin, callback) {
-    // Allow requests with no origin (mobile apps, Postman, etc.)
-    if (!origin) return callback(null, true);
-    
-    const allowedOrigins = [
-      process.env.FRONTEND_URL,
-      'https://mini-linkedin-three.vercel.app',
-      'http://localhost:3000', // For development
-      'https://localhost:3000'
-    ].filter(Boolean);
-    
-    if (allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: '*',
   credentials: true,
   optionsSuccessStatus: 200
 };
