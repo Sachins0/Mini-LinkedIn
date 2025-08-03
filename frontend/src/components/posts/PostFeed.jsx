@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PostCard from './PostCard';
 import PostForm from './PostForm';
 import { getPosts } from '../../services/postService';
@@ -17,7 +17,8 @@ const PostFeed = () => {
   });
 
   // Fetch posts
-  const fetchPosts = async (page = 1, append = false) => {
+  // Memoize fetchPosts to prevent infinite re-renders
+  const fetchPosts = useCallback(async (page = 1, append = false) => {
     try {
       if (page === 1) {
         setLoading(true);
@@ -46,12 +47,12 @@ const PostFeed = () => {
       setLoading(false);
       setLoadingMore(false);
     }
-  };
+  }, [pagination.limit]); // Include pagination.limit as dependency
 
   // Load initial posts
   useEffect(() => {
     fetchPosts();
-  }, []);
+  }, [fetchPosts]);
 
   // Handle new post creation
   const handlePostCreated = (newPost) => {

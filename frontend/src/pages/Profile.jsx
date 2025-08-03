@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { getUserProfile, getUserPosts } from '../services/userService';
@@ -10,7 +10,7 @@ import { formatJoinDate } from '../utils/timeUtils';
 const Profile = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { user: currentUser, isAuthenticated } = useAuth();
+  const { user: currentUser } = useAuth();
   
   const [user, setUser] = useState(null);
   const [posts, setPosts] = useState([]);
@@ -28,7 +28,8 @@ const Profile = () => {
   const isOwnProfile = currentUser && currentUser._id === id;
 
   // Fetch user profile
-  const fetchProfile = async () => {
+  // Memoize fetch functions to prevent infinite re-renders
+  const fetchProfile = useCallback(async () => {
     try {
       setLoading(true);
       const result = await getUserProfile(id);
@@ -45,10 +46,9 @@ const Profile = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id, navigate]); // Dependencies for fetchProfile
 
-  // Fetch user posts
-  const fetchUserPosts = async (page = 1) => {
+  const fetchUserPosts = useCallback(async (page = 1) => {
     try {
       if (page === 1) {
         setLoadingPosts(true);
@@ -74,14 +74,15 @@ const Profile = () => {
     } finally {
       setLoadingPosts(false);
     }
-  };
+  }, [id]); // Dependencies for fetchUserPosts
 
   useEffect(() => {
     if (id) {
       fetchProfile();
       fetchUserPosts();
     }
-  }, [id]);
+  }, [id, fetchProfile, fetchUserPosts]); // ✅ Fixed: Include all dependencies
+
 
   // Handle post update
   const handlePostUpdate = (updatedPost) => {

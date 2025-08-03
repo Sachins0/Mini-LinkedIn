@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { searchUsers } from '../services/userService';
 import toast from 'react-hot-toast';
@@ -19,7 +19,8 @@ const Search = () => {
   });
 
   // Fetch search results
-  const fetchSearchResults = async (page = 1) => {
+  // Memoize fetch function
+  const fetchSearchResults = useCallback(async (page = 1) => {
     if (!query) return;
 
     try {
@@ -47,11 +48,12 @@ const Search = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [query, pagination.limit]); // Dependencies for fetchSearchResults
 
   useEffect(() => {
     fetchSearchResults();
-  }, [query]);
+  }, [fetchSearchResults]); // ✅ Fixed: Include fetchSearchResults dependency
+
 
   // Load more results
   const loadMore = () => {

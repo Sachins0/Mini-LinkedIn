@@ -1,5 +1,4 @@
 import api from './api';
-import { API_ENDPOINTS } from '../utils/constants';
 
 // Get user profile by ID
 export const getUserProfile = async (id) => {
