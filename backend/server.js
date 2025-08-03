@@ -47,6 +47,7 @@ const corsOptions = {
     
     const allowedOrigins = [
       process.env.FRONTEND_URL,
+      'https://mini-linkedin-three.vercel.app',
       'http://localhost:3000', // For development
       'https://localhost:3000'
     ].filter(Boolean);
